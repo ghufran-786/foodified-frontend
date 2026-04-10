@@ -7,7 +7,6 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { dataContext } from "../UserContext";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCart } from "../redux/cartSlice";
-import { cartAPI } from "../services/cartAPI";
 
 const Nav = ({ input, setInput }) => {
   let {
@@ -70,13 +69,25 @@ const Nav = ({ input, setInput }) => {
 
   return (
     <>
-      <div style={{height: NAV_HEIGHT + 16}} aria-hidden="true" />
-      <div className="w-full flex flex-col gap-3 items-center sm:flex-row sm:justify-between px-4 py-3 sm:px-8" style={{backgroundColor: '#1F2A44', boxShadow: '0 4px 16px rgba(255, 90, 95, 0.1)', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, minHeight: NAV_HEIGHT}}>
+      <div style={{ height: NAV_HEIGHT }} aria-hidden="true" />
       <div
-        className="flex items-center gap-3 cursor-pointer"
-        onClick={() => navigate("/")}
-        aria-label="Foodified home"
+        className="w-full flex justify-between items-center px-8"
+        style={{
+          backgroundColor: '#1F2A44',
+          boxShadow: '0 4px 16px rgba(255, 90, 95, 0.1)',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          height: NAV_HEIGHT,
+        }}
       >
+        <div
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={() => navigate("/")}
+          aria-label="Foodified home"
+        >
         <div className="w-12 h-12 flex justify-center items-center rounded-lg" style={{backgroundColor: 'var(--coral-primary)'}}>
           <MdFastfood className="w-6 h-6 text-white" />
         </div>

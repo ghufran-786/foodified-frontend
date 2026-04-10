@@ -100,7 +100,7 @@ const CartItems = () => {
               <span className="text-xl font-semibold" style={{color: 'var(--coral-primary)'}}>Rs. {item.price * item.quantity}/-</span>
               <RiDeleteBin6Line 
                 onClick={() => handleDelete(item)}
-                className="w-7 h-7 cursor-pointer transition-all duration-300 hover:scale-110" 
+                className="w-7 h-7 cursor-pointer transition-all duration-300 hover:scale-110"
                 style={{color: '#d32f2f'}}
               />
             </div>

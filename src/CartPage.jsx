@@ -18,7 +18,7 @@ const CartPage = () => {
             <span className='text-xl font-semibold' style={{color: 'var(--coral-primary)'}}>Order Items</span>
             <RxCross2 
               onClick={() => setShowCart(false)} 
-              className='w-8 h-8 text-xl font-bold cursor-pointer transition-all duration-300 hover:scale-110' 
+              className='w-8 h-8 text-xl font-bold cursor-pointer transition-all duration-300 hover:scale-110'
               style={{color: 'var(--coral-primary)'}}
             />
         </header>

@@ -102,8 +102,8 @@ const Login = () => {
         </div>
 
         {/* Card Container */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8" style={{boxShadow: '0 10px 40px rgba(255, 90, 95, 0.15)'}}>
-          <h1 className="text-3xl sm:text-4xl font-bold text-center mb-2" style={{color: 'var(--text-dark)'}}>Welcome Back</h1>
+        <div className="bg-white rounded-2xl shadow-2xl p-8" style={{boxShadow: '0 10px 40px rgba(255, 90, 95, 0.15)'}}>
+          <h1 className="text-4xl font-bold text-center mb-2" style={{color: 'var(--text-dark)'}}>Welcome Back</h1>
           <p className="text-center mb-8 text-sm sm:text-base" style={{color: 'var(--text-light)'}}>Login to your account</p>
 
           {/* Signup success message */}

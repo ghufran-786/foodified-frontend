@@ -195,7 +195,7 @@ const Signup = () => {
             {/* Password Input */}
             <div className="relative">
               <MdLock className="absolute left-3 top-1/2 -translate-y-1/2 text-lg" style={{color: 'var(--coral-primary)'}} />
-              <input
+              <input   
                 type="password"
                 name="password"
                 placeholder="Create a password"
