@@ -1,6 +1,6 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL}/api/cart`
-  : "http://localhost:5000/api/cart";
+  : "https://foodified-backend.onrender.com/api/cart";
 
 const getAuthHeader = () => {
   const token = localStorage.getItem("token");

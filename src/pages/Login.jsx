@@ -35,7 +35,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const API_URL = import.meta.env.VITE_API_URL || "https://foodified-backend.onrender.com";
       const response = await fetch(`${API_URL}/api/login`, {
         method: "POST",
         headers: {
@@ -61,7 +61,7 @@ const Login = () => {
 
         // Fetch user's cart
         try {
-          const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+          const API_URL = import.meta.env.VITE_API_URL || "https://foodified-backend.onrender.com";
           const cartResponse = await fetch(`${API_URL}/api/cart/`, {
             method: "GET",
             headers: {
