@@ -92,7 +92,7 @@ const Signup = () => {
 
     try {
       const API_URL = import.meta.env.VITE_API_URL || "https://foodified-backend.onrender.com";
-      const response = await fetch(`${API_URL}/api/signup", {
+      const response = await fetch(`${API_URL}/api/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
