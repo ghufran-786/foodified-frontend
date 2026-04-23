@@ -142,7 +142,7 @@ const Signup = () => {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Name Input */}
             <div className="relative">
-              <MdPerson className="absolute left-3 top-1/2 -translate-y-1/2 text-lg" style={{color: 'var(--coral-primary)'}} />
+              {/*<MdPerson className="absolute left-3 top-1/2 -translate-y-1/2 text-lg" style={{color: 'var(--coral-primary)'}} />*/}
               <input
                 type="text"
                 name="name"
@@ -168,7 +168,7 @@ const Signup = () => {
 
             {/* Email Input */}
             <div className="relative">
-              <MdEmail className="absolute left-3 top-1/2 -translate-y-1/2 text-lg" style={{color: 'var(--coral-primary)'}} />
+              {/*<MdEmail className="absolute left-3 top-1/2 -translate-y-1/2 text-lg" style={{color: 'var(--coral-primary)'}} />*/}
               <input
                 type="email"
                 name="email"
@@ -194,7 +194,7 @@ const Signup = () => {
 
             {/* Password Input */}
             <div className="relative">
-              <MdLock className="absolute left-3 top-1/2 -translate-y-1/2 text-lg" style={{color: 'var(--coral-primary)'}} />
+              {/*<MdLock className="absolute left-3 top-1/2 -translate-y-1/2 text-lg" style={{color: 'var(--coral-primary)'}} />*/}
               <input   
                 type="password"
                 name="password"

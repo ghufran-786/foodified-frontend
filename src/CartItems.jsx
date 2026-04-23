@@ -52,8 +52,19 @@ const CartItems = () => {
           {items.map((item, index) => (
           <div key={index} className="w-full p-2 shadow-md flex flex-col md:flex-row justify-between gap-5 rounded-lg transition-all duration-300" style={{backgroundColor: 'var(--bg-warm)', border: '1px solid var(--border-light)'}}>
             <div className="w-full md:w-[60%] bg-white flex flex-col md:flex-row gap-5 rounded-lg overflow-hidden">
-              <div className="w-full md:w-[40%] h-44 md:h-auto overflow-hidden rounded-lg">
-                <img src={item.image} alt={item.name} className="object-cover h-full w-full" />
+              <div className="w-full md:w-[40%] h-44 md:h-auto overflow-hidden rounded-lg bg-gray-100 flex items-center justify-center">
+                <img 
+                  src={item.image || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23e0e0e0' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='%23999' text-anchor='middle' dy='.3em'%3E🍽️%3C/text%3E%3Ctext x='50%25' y='70%25' font-size='12' fill='%23999' text-anchor='middle'%3ENo Image%3C/text%3E%3C/svg%3E"} 
+                  alt={item.name} 
+                  className="object-cover h-full w-full"
+                  onError={(e) => {
+                    console.log("❌ Cart image failed:", e.target.src, " | Using fallback SVG");
+                    e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23e0e0e0' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='%23999' text-anchor='middle' dy='.3em'%3E🍽️%3C/text%3E%3Ctext x='50%25' y='70%25' font-size='12' fill='%23999' text-anchor='middle'%3ENo Image%3C/text%3E%3C/svg%3E";
+                  }}
+                  onLoad={() => {
+                    console.log("✅ Cart image loaded:", item.image);
+                  }}
+                />
               </div>
               <div className="w-full md:w-[60%] flex flex-col gap-3 py-2">
                 <div className="text-lg font-semibold" style={{color: 'var(--text-dark)'}}>{item.name}</div>

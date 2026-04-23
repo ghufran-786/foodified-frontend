@@ -85,7 +85,7 @@ const ForgotPassword = () => {
             {/* Email Input */}
             <div className="relative">
               <div className="flex items-center">
-                <MdEmail className="absolute left-3 text-green-500 w-5 h-5" />
+                {/*<MdEmail className="absolute left-3 text-green-500 w-5 h-5" />*/}
                 <input
                   type="email"
                   placeholder="Enter your email"

@@ -123,7 +123,7 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Input */}
             <div className="relative">
-              <MdEmail className="absolute left-3 top-1/2 -translate-y-1/2 text-lg" style={{color: 'var(--coral-primary)'}} />
+              {/*<MdEmail className="absolute left-3 top-1/2 -translate-y-1/2 text-lg" style={{color: 'var(--coral-primary)'}} />*/}
               <input
                 type="email"
                 name="email"
@@ -149,7 +149,7 @@ const Login = () => {
 
             {/* Password Input */}
             <div className="relative">
-              <MdLock className="absolute left-3 top-1/2 -translate-y-1/2 text-lg" style={{color: 'var(--coral-primary)'}} />
+              {/*<MdLock className="absolute left-3 top-1/2 -translate-y-1/2 text-lg" style={{color: 'var(--coral-primary)'}} />*/}
               <input
                 type="password"
                 name="password"
@@ -157,7 +157,7 @@ const Login = () => {
                 value={form.password}
                 onChange={handleChange}
                 disabled={loading}
-                className="block w-full pl-12 pr-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 transition disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="block w-full pl-12 pr-4 py-3 border-2 rounded-lg focus:border-gray-700 focus:ring-gray-300 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
                 style={{
                   borderColor: 'var(--border-light)',
                   color: 'var(--text-dark)'
@@ -177,7 +177,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 text-white font-bold rounded-lg transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:hover:shadow-lg disabled:hover:translate-y-0"
+              className="mt-5 w-full py-3 text-white font-bold rounded-lg transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:hover:shadow-lg disabled:hover:translate-y-0"
               style={{
                 backgroundColor: 'var(--coral-primary)'
               }}
