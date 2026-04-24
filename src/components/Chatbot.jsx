@@ -5,9 +5,22 @@ import { dataContext } from "../UserContext";
 import { MdChat, MdClose, MdSend } from "react-icons/md";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import axios from "axios";
+import { cartAPI } from "../services/cartAPI";
 
 // SVG Fallback image - no network required
 const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23e0e0e0' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='%23999' text-anchor='middle' dy='.3em'%3E🍽️%3C/text%3E%3Ctext x='50%25' y='70%25' font-size='12' fill='%23999' text-anchor='middle'%3ENo Image%3C/text%3E%3C/svg%3E";
+
+// Helper function to get valid image URL
+const getImageUrl = (image) => {
+  if (!image) return FALLBACK_IMAGE;
+  
+  // Block placeholder URLs that fail to load
+  if (image.includes("via.placeholder.com")) {
+    return FALLBACK_IMAGE;
+  }
+  
+  return image;
+};
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,16 +35,12 @@ const Chatbot = () => {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [imageLoadingStates, setImageLoadingStates] = useState({});
   const messagesEndRef = useRef(null);
   const dispatch = useDispatch();
   const { userEmail, isAuthenticated } = useContext(dataContext);
 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-  // Only show chatbot if user is logged in
-  if (!isAuthenticated || !userEmail) {
-    return null;
-  }
 
   // Auto scroll to latest message
   useEffect(() => {
@@ -54,7 +63,7 @@ const Chatbot = () => {
   const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23e0e0e0' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='%23999' text-anchor='middle' dy='.3em'%3E🍽️%3C/text%3E%3Ctext x='50%25' y='70%25' font-size='12' fill='%23999' text-anchor='middle'%3ENo Image%3C/text%3E%3C/svg%3E";
 
   // Handle Add to Cart
-  const handleAddToCart = (product) => {
+  const handleAddToCart = async (product) => {
     try {
       // DEBUG: Log product object before adding to cart
       console.log("🖼️ Adding to cart - Full product object:", product);
@@ -71,7 +80,20 @@ const Chatbot = () => {
       
       console.log("✅ Final product to dispatch:", productToAdd);
       
+      // Add to Redux state (for instant UI update)
       dispatch(addItem(productToAdd));
+      
+      // IMPORTANT: Also save to backend to persist cart across sessions
+      if (isAuthenticated) {
+        const backendPayload = {
+          id: product._id,
+          name: product.name,
+          price: product.price,
+          image: product.image || FALLBACK_IMAGE
+        };
+        const backendResponse = await cartAPI.addItem(backendPayload);
+        console.log("💾 Backend cart response:", backendResponse);
+      }
       
       // Show success message
       addMessage(`✅ Added "${product.name}" to your cart!`, "bot");
@@ -105,6 +127,19 @@ const Chatbot = () => {
       console.log("🤖 Bot response:", response.data);
       console.log("📦 Products received from backend:", products);
       
+      // DEBUG: Check each product for image field
+      if (products && products.length > 0) {
+        products.forEach((p, idx) => {
+          console.log(`Product ${idx + 1}:`, {
+            name: p.name,
+            price: p.price,
+            hasImage: !!p.image,
+            imageValue: p.image,
+            imageLength: p.image ? p.image.length : 0
+          });
+        });
+      }
+      
       // Ensure all products have image field with fallback
       const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23e0e0e0' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='%23999' text-anchor='middle' dy='.3em'%3E🍽️%3C/text%3E%3Ctext x='50%25' y='70%25' font-size='12' fill='%23999' text-anchor='middle'%3ENo Image%3C/text%3E%3C/svg%3E";
       const productsWithImages = (products || []).map(p => ({
@@ -130,20 +165,22 @@ const Chatbot = () => {
 
   return (
     <>
-      {/* Floating Chat Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-16 h-16 rounded-full shadow-lg flex items-center justify-center text-2xl text-white transition-all duration-300 hover:scale-110 z-40"
-        style={{
-          backgroundColor: "var(--coral-primary)",
-        }}
-        title={isOpen ? "Close chat" : "Open chat"}
-      >
-        {isOpen ? <MdClose /> : <MdChat />}
-      </button>
+      {isAuthenticated && userEmail ? (
+        <>
+          {/* Floating Chat Button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="fixed bottom-6 right-6 w-16 h-16 rounded-full shadow-lg flex items-center justify-center text-2xl text-white transition-all duration-300 hover:scale-110 z-40"
+            style={{
+              backgroundColor: "var(--coral-primary)",
+            }}
+            title={isOpen ? "Close chat" : "Open chat"}
+          >
+            {isOpen ? <MdClose /> : <MdChat />}
+          </button>
 
-      {/* Chat Window */}
-      {isOpen && (
+          {/* Chat Window */}
+          {isOpen && (
         <div
           className="fixed bottom-24 right-6 w-96 max-h-[600px] rounded-2xl shadow-2xl flex flex-col bg-white z-50"
           style={{
@@ -205,32 +242,46 @@ const Chatbot = () => {
                     {msg.products.map((product) => (
                       <div
                         key={product._id}
-                        className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                        className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex items-start"
                       >
                         {/* Product Image */}
-                        <div className="h-32 overflow-hidden bg-gray-100 flex items-center justify-center">
+                        <div className="w-32 h-32 flex-shrink-0 bg-gray-100 overflow-hidden relative">
+                          {imageLoadingStates[product._id] && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
+                              <AiOutlineLoading3Quarters className="animate-spin text-xl" style={{color: "var(--coral-primary)"}} />
+                            </div>
+                          )}
                           <img
-                            src={product.image || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23e0e0e0' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='%23999' text-anchor='middle' dy='.3em'%3E🍽️%3C/text%3E%3Ctext x='50%25' y='70%25' font-size='12' fill='%23999' text-anchor='middle'%3ENo Image%3C/text%3E%3C/svg%3E"}
+                            src={getImageUrl(product.image)}
                             alt={product.name}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              console.log("❌ Image failed to load:", e.target.src, " | Using fallback SVG");
-                              e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23e0e0e0' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='%23999' text-anchor='middle' dy='.3em'%3E🍽️%3C/text%3E%3Ctext x='50%25' y='70%25' font-size='12' fill='%23999' text-anchor='middle'%3ENo Image%3C/text%3E%3C/svg%3E";
+                            className="w-full h-full object-cover block"
+                            style={{ minWidth: "100%", minHeight: "100%", display: "block" }}
+                            onLoadStart={() => {
+                              setImageLoadingStates(prev => ({...prev, [product._id]: true}));
                             }}
-                            onLoad={() => {
-                              console.log("✅ Image loaded:", product.image);
+                            onLoad={(e) => {
+                              console.log("✅ Image loaded successfully for:", product.name);
+                              setImageLoadingStates(prev => ({...prev, [product._id]: false}));
+                            }}
+                            onError={(e) => {
+                              console.log("❌ Image failed to load for:", product.name);
+                              console.log("   Attempted URL:", e.target.src);
+                              setImageLoadingStates(prev => ({...prev, [product._id]: false}));
+                              e.target.src = FALLBACK_IMAGE;
                             }}
                           />
                         </div>
 
                         {/* Product Info */}
-                        <div className="p-3">
-                          <h4 className="font-semibold text-gray-800 text-sm mb-1">
-                            {product.name}
-                          </h4>
-                          <p className="text-xs text-gray-600 mb-2 line-clamp-2">
-                            {product.description || "Delicious food item"}
-                          </p>
+                        <div className="p-3 flex-1 flex flex-col justify-between">
+                          <div>
+                            <h4 className="font-semibold text-gray-800 text-sm mb-1">
+                              {product.name}
+                            </h4>
+                            <p className="text-xs text-gray-600 mb-2 line-clamp-2">
+                              {product.description || "Delicious food item"}
+                            </p>
+                          </div>
                           <div className="flex items-center justify-between">
                             <span
                               className="font-bold text-lg"
@@ -298,6 +349,8 @@ const Chatbot = () => {
           </form>
         </div>
       )}
+    </>
+      ) : null}
     </>
   );
 };
